@@ -1,8 +1,8 @@
 var express = require('express');
 var router = express.Router();
-const { index, actionCreate } = require('./controller');
+const { index, actionRegister } = require('./controller');
 
 /* GET home page. */
 router.get('/', index);
-router.post('/', actionCreate);
+router.post('/register', actionRegister);
 module.exports = router;
