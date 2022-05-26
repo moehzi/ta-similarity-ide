@@ -1,4 +1,4 @@
-const User = require('./model');
+const User = require('../users/model');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const {
@@ -18,17 +18,19 @@ function createToken(payload) {
 module.exports = {
   actionRegister: async (req, res) => {
     try {
-      const { name, password, role, NIM } = req.body;
+      const { name, password, role, registrationNumber, email } = req.body;
 
       const encryptedPassword = bcrypt.hashSync(password, 10);
 
-      const NIMExist = await User.findOne({ NIM: NIM });
+      const regNumberExist = await User.findOne({
+        registrationNumber: registrationNumber,
+      });
 
-      if (NIMExist) {
+      if (regNumberExist) {
         return res.status(400).json({
           data: {
             status: 'FAIL',
-            message: 'NIM is already registered',
+            message: 'Registration number is already registered',
           },
         });
       }
@@ -37,7 +39,8 @@ module.exports = {
         name,
         encryptedPassword,
         role,
-        NIM,
+        registrationNumber,
+        email,
       });
 
       return res.status(201).json({
@@ -46,7 +49,8 @@ module.exports = {
         data: {
           id: user.id,
           name: user.name,
-          NIM: user.NIM,
+          registrationNumber: user.registrationNumber,
+          email: user.email,
           role: user.role,
         },
       });
@@ -59,7 +63,7 @@ module.exports = {
     try {
       const { username, password } = req.body;
 
-      const user = await User.findOne({ NIM: username });
+      const user = await User.findOne({ registrationNumber: username });
 
       if (!user) {
         return res.status(401).json({
@@ -86,8 +90,10 @@ module.exports = {
         data: {
           token: createToken({
             id: user.id,
-            username: user.NIM,
+            name: user.name,
+            username: user.registrationNumber,
             role: user.role,
+            email: user.email,
           }),
         },
       });

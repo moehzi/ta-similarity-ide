@@ -4,9 +4,14 @@ const userSchema = mongoose.Schema({
     type: String,
     required: [true, 'Nama tidak boleh kosong'],
   },
-  NIM: {
+  registrationNumber: {
     type: String,
-    required: [true, 'NIM tidak boleh kosong'],
+    required: [true, 'NIM/NIP tidak boleh kosong'],
+    unique: true,
+  },
+  email: {
+    type: String,
+    required: [true, 'Email tidak boleh kosong'],
     unique: true,
   },
   encryptedPassword: {
