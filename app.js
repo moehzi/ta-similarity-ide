@@ -4,6 +4,7 @@ const cors = require('cors');
 
 const userRouter = require('./app/users/router');
 const authRouter = require('./app/auth/router');
+const courseRouter = require('./app/courses/router');
 
 const app = express();
 
@@ -17,6 +18,7 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use(authRouter);
 app.use(userRouter);
+app.use(courseRouter);
 
 const PORT = process.env.PORT || '8080';
 
