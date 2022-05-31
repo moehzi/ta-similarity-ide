@@ -16,6 +16,7 @@ const userSchema = mongoose.Schema({
   },
   encryptedPassword: {
     type: String,
+    select: 'false',
     required: [true, 'Password tidak boleh kosong'],
   },
   role: {
@@ -23,6 +24,7 @@ const userSchema = mongoose.Schema({
     default: 'student',
     enum: ['student', 'teacher', 'admin'],
   },
+  courses: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
 });
 
 module.exports = mongoose.model('User', userSchema);
