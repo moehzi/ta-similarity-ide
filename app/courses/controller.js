@@ -21,6 +21,18 @@ module.exports = {
     });
   },
 
+  deleteCourse: async (req, res) => {
+    const course = await Course.findOneAndRemove({ _id: req.params.id });
+
+    if (!course)
+      return res.status(404).json({ status: 'Fail', message: 'Not found' });
+
+    return res.status(200).json({
+      status: 'OK',
+      message: 'Delete sucessfully',
+    });
+  },
+
   joinCourse: async (req, res) => {
     const course = await Course.findOne({ _id: req.params.id }).populate(
       'students'
