@@ -24,12 +24,51 @@ module.exports = {
   deleteCourse: async (req, res) => {
     const course = await Course.findOneAndRemove({ _id: req.params.id });
 
+    const isAuthor = await Course.findOne({ author: { _id: req.user.id } });
+
+    if (!isAuthor)
+      return res.status(403).json({
+        status: 'FORBIDDEN',
+        message: 'You are not the author of this course',
+      });
+
     if (!course)
       return res.status(404).json({ status: 'Fail', message: 'Not found' });
 
     return res.status(200).json({
       status: 'OK',
       message: 'Delete sucessfully',
+    });
+  },
+
+  editCourse: async (req, res) => {
+    const { name } = req.body;
+
+    const course = await Course.findOneAndUpdate(
+      { _id: req.params.id },
+      { name }
+    );
+
+    const user = await User.findOne({ _id: req.user.id }).select({
+      encryptedPassword: 0,
+      courses: 0,
+    });
+
+    const isAuthor = await Course.findOne({ author: { _id: req.user.id } });
+
+    if (!isAuthor)
+      return res.status(403).json({
+        status: 'FORBIDDEN',
+        message: 'You are not the author of this course',
+      });
+
+    if (!course)
+      return res.status(404).json({ status: 'Fail', message: 'Not found' });
+
+    return res.status(200).json({
+      status: 'OK',
+      message: 'Your updated sucessfully',
+      data: { name: name, author: user },
     });
   },
 
