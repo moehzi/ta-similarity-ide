@@ -6,6 +6,7 @@ const coursesSchema = mongoose.Schema({
     type: String,
     required: [true, 'Nama tidak boleh kosong'],
   },
+  author: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
   students: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
 });
 

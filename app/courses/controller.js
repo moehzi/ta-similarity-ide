@@ -4,13 +4,20 @@ const User = require('../users/model');
 module.exports = {
   createCourse: async (req, res) => {
     const { name } = req.body;
+
+    const user = await User.findOne({ _id: req.user.id }).select({
+      encryptedPassword: 0,
+      courses: 0,
+    });
+
     const course = await Course({ name });
+    course.author.push(user);
     await course.save();
 
-    return res.status(201).json({
+    return res.status(200).json({
       status: 'OK',
       message: 'Successfully created course',
-      data: course,
+      data: { name: course.name, author: user },
     });
   },
 
