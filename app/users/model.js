@@ -17,7 +17,6 @@ const userSchema = mongoose.Schema({
   },
   encryptedPassword: {
     type: String,
-    select: 'false',
     required: [true, 'Password tidak boleh kosong'],
   },
   role: {

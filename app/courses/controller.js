@@ -105,6 +105,46 @@ module.exports = {
     });
   },
 
+  getMyCourse: async (req, res) => {
+    const course = await Course.find({ author: { _id: req.user.id } }).populate(
+      'students',
+      '-courses -encryptedPassword -role'
+    );
+
+    const user = await User.findOne({ _id: req.user.id })
+      .populate({
+        path: 'courses',
+        select: {
+          name: 1,
+        },
+        populate: [
+          {
+            path: 'author',
+            model: 'User',
+            select: {
+              name: 1,
+            },
+          },
+        ],
+      })
+      .select({
+        encryptedPassword: 0,
+        __v: 0,
+        role: 0,
+      });
+
+    if (user.role === 'teacher')
+      return res.status(200).json({
+        status: 'OK',
+        data: course,
+      });
+
+    return res.status(200).json({
+      status: 'OK',
+      data: user,
+    });
+  },
+
   getCourseswithStudents: async (req, res) => {
     const course = await Course.find().populate(
       'students',
