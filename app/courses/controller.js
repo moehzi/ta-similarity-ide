@@ -108,7 +108,7 @@ module.exports = {
   getMyCourse: async (req, res) => {
     const course = await Course.find({ author: { _id: req.user.id } }).populate(
       'students',
-      '-courses -encryptedPassword -role'
+      '-courses -encryptedPassword'
     );
 
     const user = await User.findOne({ _id: req.user.id })
@@ -130,7 +130,6 @@ module.exports = {
       .select({
         encryptedPassword: 0,
         __v: 0,
-        role: 0,
       });
 
     if (user.role === 'teacher')
