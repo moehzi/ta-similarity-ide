@@ -6,7 +6,7 @@ module.exports = {
     const { name, description } = req.body;
 
     const course = await Course.findOne({ _id: req.params.id }).populate(
-      'author'
+      'author works'
     );
 
     const isAuthor = course?.author.some(
@@ -19,8 +19,10 @@ module.exports = {
         message: 'You are not the author of this course',
       });
 
-    const work = await Work({ name, description, course: course });
+    const work = await Work({ name, description, courseId: course._id });
+    course.works.push(work);
     await work.save();
+    await course.save();
 
     return res.status(200).json({
       status: 'OK',

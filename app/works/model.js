@@ -10,7 +10,7 @@ const workSchema = mongoose.Schema({
     required: [true, 'Deskripsi tidak boleh kosong'],
   },
 
-  course: { type: mongoose.Schema.Types.ObjectId, ref: 'Course' },
+  courseId: { type: mongoose.Schema.Types.ObjectId, ref: 'Course' },
 });
 
 module.exports = mongoose.model('Work', workSchema);

@@ -146,8 +146,8 @@ module.exports = {
 
   getCourseswithStudents: async (req, res) => {
     const course = await Course.find().populate(
-      'students author',
-      '-encryptedPassword'
+      'students author works',
+      '-__v -encryptedPassword'
     );
 
     return res.status(200).json({
