@@ -125,6 +125,13 @@ module.exports = {
               name: 1,
             },
           },
+          {
+            path: 'works',
+            model: 'Work',
+            select: {
+              name: 1,
+            },
+          },
         ],
       })
       .select({
