@@ -9,6 +9,7 @@ const {
   deleteCourse,
   editCourse,
   getMyCourse,
+  getListWorkOfCourse,
 } = require('./controller');
 
 /* GET home page. */
@@ -17,11 +18,16 @@ router.post('/join-course/:id', isAuth, isRole(['student']), joinCourse);
 router.get('/courses', getCourseswithStudents);
 router.delete('/courses/:id', isAuth, isRole(['teacher']), deleteCourse);
 router.put('/courses/:id', isAuth, isRole(['teacher']), editCourse);
-
 router.get(
   '/courses/my-course',
   isAuth,
   isRole(['teacher', 'student']),
   getMyCourse
+);
+router.get(
+  '/courses/:id/works',
+  isAuth,
+  isRole(['teacher', 'student']),
+  getListWorkOfCourse
 );
 module.exports = router;

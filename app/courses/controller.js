@@ -162,4 +162,20 @@ module.exports = {
       data: course,
     });
   },
+
+  getListWorkOfCourse: async (req, res) => {
+    try {
+      const course = await Course.findById({ _id: req.params.id }).populate({
+        path: 'author works',
+        select: { name: 1 },
+      });
+
+      return res.status(200).json({
+        status: 'OK',
+        data: course,
+      });
+    } catch (error) {
+      console.log(error.message);
+    }
+  },
 };
