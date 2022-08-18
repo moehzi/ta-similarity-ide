@@ -8,12 +8,9 @@ const courseRouter = require('./app/courses/router');
 const workRouter = require('./app/works/router');
 
 const app = express();
-
-app.get('/', (req, res) => {
-  res.send('<h1>Hello World</h1>');
-});
-// view engine setup
 app.use(cors());
+
+// view engine setup
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
