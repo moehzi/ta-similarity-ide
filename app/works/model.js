@@ -9,7 +9,10 @@ const workSchema = mongoose.Schema({
     type: String,
     required: [true, 'Deskripsi tidak boleh kosong'],
   },
-
+  codeTest: {
+    type: String,
+    required: [true, 'Code Test tidak boleh kosong'],
+  },
   courseId: { type: mongoose.Schema.Types.ObjectId, ref: 'Course' },
 });
 

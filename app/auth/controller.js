@@ -11,7 +11,7 @@ function isPasswordValid(password, encryptedPassword) {
 
 function createToken(payload) {
   return jwt.sign(payload, JWT_SIGNATURE_KEY, {
-    expiresIn: '1h',
+    expiresIn: '24h',
   });
 }
 

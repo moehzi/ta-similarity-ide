@@ -4,7 +4,7 @@ const Work = require('./model');
 module.exports = {
   createWork: async (req, res) => {
     try {
-      const { name, description } = req.body;
+      const { name, description, codeTest } = req.body;
 
       const course = await Course.findOne({ _id: req.params.id }).populate(
         'author works'
@@ -20,7 +20,12 @@ module.exports = {
           message: 'You are not the author of this course',
         });
 
-      const work = await Work({ name, description, courseId: course._id });
+      const work = await Work({
+        name,
+        description,
+        courseId: course._id,
+        codeTest,
+      });
       course.works.push(work);
       await work.save();
       await course.save();
