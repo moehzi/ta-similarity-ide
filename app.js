@@ -5,6 +5,7 @@ const cors = require('cors');
 const userRouter = require('./app/users/router');
 const authRouter = require('./app/auth/router');
 const courseRouter = require('./app/courses/router');
+const codeRouter = require('./app/code/router');
 const workRouter = require('./app/works/router');
 
 const app = express();
@@ -16,6 +17,7 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use(authRouter);
 app.use(userRouter);
+app.use(codeRouter);
 app.use(courseRouter);
 app.use(workRouter);
 

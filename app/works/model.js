@@ -18,6 +18,7 @@ const workSchema = mongoose.Schema({
     required: [true, 'Expected Output tidak boleh kosong'],
   },
   courseId: { type: mongoose.Schema.Types.ObjectId, ref: 'Course' },
+  students: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Code' }],
 });
 
 module.exports = mongoose.model('Work', workSchema);
