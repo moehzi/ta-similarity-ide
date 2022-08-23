@@ -4,7 +4,7 @@ const Work = require('./model');
 module.exports = {
   createWork: async (req, res) => {
     try {
-      const { name, description, codeTest } = req.body;
+      const { name, description, codeTest,expectedOutput } = req.body;
 
       const course = await Course.findOne({ _id: req.params.id }).populate(
         'author works'
@@ -23,6 +23,7 @@ module.exports = {
       const work = await Work({
         name,
         description,
+		expectedOutput,
         courseId: course._id,
         codeTest,
       });
@@ -33,6 +34,19 @@ module.exports = {
       return res.status(200).json({
         status: 'OK',
         message: 'Successfully created work',
+        data: work,
+      });
+    } catch (error) {
+      console.log(error.message);
+    }
+  },
+
+  getWorkById: async (req, res) => {
+    try {
+      const work = await Work.findById({ _id: req.params.id });
+
+      return res.status(200).json({
+        status: 'OK',
         data: work,
       });
     } catch (error) {
