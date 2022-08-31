@@ -1,5 +1,6 @@
 const Course = require('../courses/model');
 const Work = require('./model');
+const Code = require('../code/model.js');
 
 module.exports = {
   createWork: async (req, res) => {
@@ -27,6 +28,13 @@ module.exports = {
         courseId: course._id,
         codeTest,
       });
+      const code = await Code({
+        code: '',
+        status: 'Not Completed',
+        author: req.user.id,
+        workId: work._id,
+      });
+      work.students.push(code);
       course.works.push(work);
       await work.save();
       await course.save();
