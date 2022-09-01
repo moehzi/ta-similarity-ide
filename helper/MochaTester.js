@@ -19,15 +19,27 @@ function MochaTester(filename) {
       process.exitCode = failures ? 1 : 0; // exit with non-zero status if there were failures
     });
 
-    let summary = { successes: [], failures: [], results: [], duration_ms: 0 };
+    let summary = {
+      successes: [],
+      failures: [],
+      results: [],
+      duration_ms: 0,
+      actual_output: [],
+      expected_output: [],
+      error_msg: [],
+    };
 
     // TODO: use constant codes
-    runner.on('fail', function (test) {
+    runner.on('fail', function (test, error) {
       summary.failures.push(test.title.replace('#', ''));
       summary.results.push(false);
+      summary.actual_output.push(test.err.actual);
+      summary.expected_output.push(test.err.expected);
+      summary.error_msg.push(error.message);
     });
 
     runner.on('pass', function (test) {
+      console.log(test, 'success');
       summary.successes.push(test.title.replace('#', ''));
       summary.results.push(true);
     });

@@ -1,14 +1,23 @@
 const mongoose = require('mongoose');
 const codeSchema = mongoose.Schema({
-  code: {
+  jsCode: {
     type: String,
     required: [true, 'Code tidak boleh kosong'],
+  },
+  htmlCode: {
+    type: String,
+  },
+  cssCode: {
+    type: String,
   },
   author: { type: mongoose.Schema.Types.ObjectId, ref: 'Course' },
   workId: { type: mongoose.Schema.Types.ObjectId, ref: 'Work' },
   status: {
     type: String,
-    default: 'Not Completed',
+    required: [true, 'Status tidak boleh kosong'],
+  },
+  result: {
+    type: String,
   },
 });
 

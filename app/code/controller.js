@@ -11,10 +11,12 @@ module.exports = {
       const work = await Work.findOne({ _id: req.params.id });
       const user = await User.findOne({ _id: req.user.id });
 
-      const { code } = req.body;
+      const { htmlCode, cssCode, jsCode } = req.body;
 
       const codeBody = await Code({
-        code,
+        cssCode,
+        htmlCode,
+        jsCode,
         status: 'Completed',
         author: req.user.id,
         workId: req.params.id,
@@ -46,18 +48,14 @@ module.exports = {
       const MochaTester = require('../../helper/MochaTester');
 
       await Work.findOne({ _id: req.params.id }, (err, doc) => {
-        const js = req.body.code;
+        const js = req.body.jsCode;
         jsTest += doc.codeTest;
         jsTest += js;
-        // console.log(req.params.id, 'params bos');
-        console.log(jsTest, 'ini jsTestnya');
 
         fs.writeFileSync('program_test.js', jsTest);
         fs.writeFile('./program.js', js, () => {
           MochaTester('./program_test.js')
             .then((pass) => {
-              // fs.unlink("./program.js", () => { });
-              // fs.unlink("./program_test.js", () => { });
               console.log(pass, 'ini pass');
               let testedJsCode = pass.results.every((test) => test);
               clearCache();
@@ -68,9 +66,6 @@ module.exports = {
               });
             })
             .catch((err) => {
-              console.log(err, 'ini err jalan');
-              // fs.unlink("./program.js", () => { });
-              // fs.unlink("./program_test.js", () => { });
               clearCache();
               return res.status(200).json({
                 sol: false,

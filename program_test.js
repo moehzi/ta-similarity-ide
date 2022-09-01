@@ -10,5 +10,5 @@
     chai.expect(sum(5,2)).to.eql(7);
     });
 });function sum(a,b){
-  return 6;
+  return a+b;
 }

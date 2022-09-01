@@ -13,10 +13,6 @@ const workSchema = mongoose.Schema({
     type: String,
     required: [true, 'Code Test tidak boleh kosong'],
   },
-  expectedOutput: {
-    type: String,
-    required: [true, 'Expected Output tidak boleh kosong'],
-  },
   courseId: { type: mongoose.Schema.Types.ObjectId, ref: 'Course' },
   students: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Code' }],
 });
