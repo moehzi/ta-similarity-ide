@@ -8,7 +8,7 @@ module.exports = {
       const { name, description, codeTest } = req.body;
 
       const course = await Course.findOne({ _id: req.params.id }).populate(
-        'author works'
+        'author works students'
       );
 
       const isAuthor = course?.author.some(
@@ -27,16 +27,34 @@ module.exports = {
         courseId: course._id,
         codeTest,
       });
-      const code = await Code({
-        code: '',
-        status: 'Not Completed',
-        author: req.user.id,
-        workId: work._id,
-      });
-      work.students.push(code);
+
+      if (course.students.length > 0) {
+        course.students.map(async (v) => {
+          const codes = await Code({
+            htmlCode: '',
+            cssCode: '',
+            jsCode: '',
+            author: v._id,
+            status: 'Not Completed',
+            workId: work._id,
+            courseId: course._id,
+          });
+          work.code.push(codes);
+          await codes.save();
+        });
+      }
+
       course.works.push(work);
       await work.save();
       await course.save();
+
+      console.log('course', course);
+
+      //   console.log(course, 'hehe');
+      //   work.students.push(req.user.id);
+
+      //   course.code.push();
+      //   work.students.push([...course.students]);
 
       return res.status(200).json({
         status: 'OK',
@@ -50,9 +68,9 @@ module.exports = {
 
   getWorkById: async (req, res) => {
     try {
-      const work = await Work.findById({ _id: req.params.id }).populate(
-        'students'
-      );
+      const work = await Work.findById({ _id: req.params.id }).populate({
+        path: 'code',
+      });
 
       return res.status(200).json({
         status: 'OK',

@@ -79,4 +79,10 @@ module.exports = {
       console.log(error);
     }
   },
+
+  getCode: async (req, res) => {
+    const code = await Code.find();
+
+    return res.status(200).json({ code });
+  },
 };

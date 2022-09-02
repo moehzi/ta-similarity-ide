@@ -1,5 +1,7 @@
 const Course = require('./model');
 const User = require('../users/model');
+const Code = require('../code/model');
+const Work = require('../works/model');
 
 module.exports = {
   createCourse: async (req, res) => {
@@ -165,15 +167,33 @@ module.exports = {
 
   getListWorkOfCourse: async (req, res) => {
     try {
-      const course = await Course.findById({ _id: req.params.id }).populate({
-        path: 'author works',
-        select: { name: 1 },
-      });
+      const course = await Course.findOne({ _id: req.params.id }).populate(
+        'author works'
+      );
+
+      const code = await Code.find({
+        author: req.user.id,
+        courseId: req.params.id,
+      }).populate('workId');
+      //   const statusCode = code.map((v) => v.status);
+
+      if (req.user.role === 'teacher') {
+        return res.status(200).json({
+          status: 'OK',
+          data: course,
+        });
+      }
 
       return res.status(200).json({
         status: 'OK',
-        data: course,
+        data: {
+          name: course.name,
+          author: course.author[0].name,
+          works: code,
+        },
       });
+
+      //   const work = await Work.find({ _id: req.params.id }).populate('code');
     } catch (error) {
       console.log(error.message);
     }
