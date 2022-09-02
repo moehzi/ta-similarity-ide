@@ -7,29 +7,24 @@ const Code = require('./model');
 
 module.exports = {
   submitWork: async (req, res) => {
+    const { htmlCode, cssCode, jsCode } = req.body;
     try {
-      const work = await Work.findOne({ _id: req.params.id });
+      const code = await Code.findOneAndUpdate(
+        { author: req.user.id, workId: req.params.id },
+        {
+          cssCode: cssCode,
+          htmlCode: htmlCode,
+          jsCode: jsCode,
+          status: 'Completed',
+        }
+      );
+
       const user = await User.findOne({ _id: req.user.id });
-
-      const { htmlCode, cssCode, jsCode } = req.body;
-
-      const codeBody = await Code({
-        cssCode,
-        htmlCode,
-        jsCode,
-        status: 'Completed',
-        author: req.user.id,
-        workId: req.params.id,
-      });
-
-      work.students.push(codeBody);
-      await codeBody.save();
-      await work.save();
 
       return res.status(200).json({
         status: 'OK',
-        message: 'Successfully created work',
-        data: codeBody,
+        message: 'Successfully submit work',
+        data: code,
       });
     } catch (error) {
       console.log(error.message);
