@@ -31,6 +31,7 @@ function MochaTester(filename) {
 
     // TODO: use constant codes
     runner.on('fail', function (test, error) {
+      console.log('fail');
       summary.failures.push(test.title.replace('#', ''));
       summary.results.push(false);
       summary.actual_output.push(test.err.actual);

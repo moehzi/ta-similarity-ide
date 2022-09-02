@@ -63,7 +63,10 @@ module.exports = {
             .catch((err) => {
               clearCache();
               return res.status(200).json({
-                sol: false,
+                solution: false,
+                data: {
+                  error_msg: [err.message],
+                },
               });
             });
         });
