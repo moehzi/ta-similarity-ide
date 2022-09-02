@@ -76,7 +76,7 @@ module.exports = {
 
   joinCourse: async (req, res) => {
     const course = await Course.findOne({ _id: req.params.id }).populate(
-      'students'
+      'students works'
     );
 
     const user = await User.findOne({ _id: req.user.id });
@@ -91,6 +91,20 @@ module.exports = {
         message: 'You are already join this class',
       });
 
+    course.works.map(async (v) => {
+      const codes = await Code({
+        htmlCode: '',
+        cssCode: '',
+        jsCode: '',
+        author: req.user.id,
+        status: 'Not Completed',
+        workId: v._id,
+        courseId: course._id,
+      });
+      v.code.push(codes);
+      await codes.save();
+    });
+
     course.students.push(user);
     user.courses.push(course);
     user.save();
@@ -104,6 +118,7 @@ module.exports = {
     return res.status(200).json({
       status: 'OK',
       message: `Successfully join ${course.name} course`,
+      data: course,
     });
   },
 
