@@ -48,14 +48,6 @@ module.exports = {
       await work.save();
       await course.save();
 
-      console.log('course', course);
-
-      //   console.log(course, 'hehe');
-      //   work.students.push(req.user.id);
-
-      //   course.code.push();
-      //   work.students.push([...course.students]);
-
       return res.status(200).json({
         status: 'OK',
         message: 'Successfully created work',

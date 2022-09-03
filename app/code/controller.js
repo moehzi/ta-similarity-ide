@@ -21,10 +21,24 @@ module.exports = {
 
       const user = await User.findOne({ _id: req.user.id });
 
+      const codeTeacher = await Code.find({
+        author: req.user.id,
+        courseId: req.params.id,
+      }).populate({ path: 'workId', populate: { path: 'code' } });
+
+      const getStatus = codeTeacher.map((v) => v.status);
+      if (!getStatus.includes('Not Completed')) {
+        await Work.findOneAndUpdate(
+          { _id: req.params.id },
+          { status: 'Ready to review' }
+        );
+      }
+
       return res.status(200).json({
         status: 'OK',
         message: 'Successfully submit work',
         data: code,
+        teacherCode: codeTeacher,
       });
     } catch (error) {
       console.log(error.message);
@@ -44,8 +58,8 @@ module.exports = {
 
       await Work.findOne({ _id: req.params.id }, (err, doc) => {
         const js = req.body.jsCode;
-        jsTest += doc.codeTest;
         jsTest += js;
+        jsTest += doc.codeTest;
 
         fs.writeFileSync('program_test.js', jsTest);
         fs.writeFile('./program.js', js, () => {
