@@ -22,11 +22,11 @@ module.exports = {
       const user = await User.findOne({ _id: req.user.id });
 
       const codeTeacher = await Code.find({
-        author: req.user.id,
-        courseId: req.params.id,
+        workId: req.params.id,
       }).populate({ path: 'workId', populate: { path: 'code' } });
 
       const getStatus = codeTeacher.map((v) => v.status);
+      console.log(getStatus);
       if (!getStatus.includes('Not Completed')) {
         await Work.findOneAndUpdate(
           { _id: req.params.id },
