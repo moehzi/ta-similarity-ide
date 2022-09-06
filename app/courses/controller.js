@@ -192,6 +192,19 @@ module.exports = {
       }).populate('workId');
       //   const statusCode = code.map((v) => v.status);
 
+      const codeTeacher = await Code.find({
+        author: req.user.id,
+        courseId: req.params.id,
+      }).populate({ path: 'workId', populate: { path: 'code' } });
+
+      const getStatus = codeTeacher.map((v) => v.status);
+      if (!getStatus.includes('Not Completed')) {
+        await Work.findOneAndUpdate(
+          { _id: req.params.id },
+          { status: 'Ready to review' }
+        );
+      }
+
       if (req.user.role === 'teacher') {
         return res.status(200).json({
           status: 'OK',
