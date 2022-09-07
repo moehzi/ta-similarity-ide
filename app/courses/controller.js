@@ -220,8 +220,6 @@ module.exports = {
           works: code,
         },
       });
-
-      //   const work = await Work.find({ _id: req.params.id }).populate('code');
     } catch (error) {
       console.log(error.message);
     }

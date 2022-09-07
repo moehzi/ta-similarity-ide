@@ -62,6 +62,10 @@ module.exports = {
     try {
       const work = await Work.findById({ _id: req.params.id }).populate({
         path: 'code',
+        populate: {
+          path: 'author',
+          select: 'name',
+        },
       });
 
       return res.status(200).json({
