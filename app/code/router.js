@@ -6,6 +6,7 @@ const {
   testWork,
   getCode,
   checkSimilarity,
+  detailStudentCode,
 } = require('./controller');
 var router = express.Router();
 
@@ -17,6 +18,13 @@ router.post(
   isAuth,
   isRole(['teacher']),
   checkSimilarity
+);
+
+router.get(
+  '/detail-work/:workId/student/:studentId',
+  isAuth,
+  isRole(['teacher']),
+  detailStudentCode
 );
 
 module.exports = router;

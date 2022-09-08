@@ -101,36 +101,54 @@ module.exports = {
 
   checkSimilarity: async (req, res) => {
     const code = await Code.find({ workId: req.params.id }).populate('author');
-
-    const result = [];
-
     code.forEach(async (v, index) => {
-      result.push({
-        id: v.author._id,
-        name: v.author.name,
-        similarityResult: [],
-      });
       const similarityPercentage = [];
-      let studentAResult = {};
+      const similarityResult = [];
+      let esprimaCodeStudentA = '';
       code.forEach((y) => {
         if (v.author.name !== y.author.name) {
-          const similarityCheck = RabinKarpJs(v.jsCode, y.jsCode);
-          studentAResult = { name: y.author.name, percentage: similarityCheck };
-          similarityPercentage.push(similarityCheck);
-          result[index]['similarityResult'].push(studentAResult);
+          const { resultSimilarity, esprimaCodeB, esprimaCodeA } = RabinKarpJs(
+            v.jsCode,
+            y.jsCode
+          );
+          esprimaCodeStudentA = esprimaCodeA;
+          similarityPercentage.push(resultSimilarity);
+          similarityResult.push({
+            name: y.author.name,
+            percentage: resultSimilarity,
+            esprimaCode: esprimaCodeB,
+            jsCode: y.jsCode,
+          });
         }
       });
+      await Work.findOneAndUpdate(
+        { _id: req.params.id },
+        { status: 'Finished' }
+      );
       await Code.findOneAndUpdate(
         { author: v.author._id, workId: req.params.id },
         {
+          esprimaCode: esprimaCodeStudentA,
           highestPercentage: `${Math.max(...similarityPercentage)}`,
-          similarityResult: result,
+          similarityResult: similarityResult,
         }
       );
     });
     return res.status(200).json({
       status: 'OK',
       message: `Sucessfully check the similarity of this assignment`,
+    });
+  },
+
+  detailStudentCode: async (req, res) => {
+    const code = await Code.find({
+      author: req.params.studentId,
+      workId: req.params.workId,
+    }).populate('author', 'name');
+
+    return res.status(200).json({
+      status: 'OK',
+      data: code,
     });
   },
 };

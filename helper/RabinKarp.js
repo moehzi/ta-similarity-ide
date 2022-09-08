@@ -3,20 +3,20 @@ const analyzeCode = require('./esprima');
 // const scriptB = require('./script2');
 
 function RabinKarpJs(codeA, codeB) {
-  const stringCodeA = analyzeCode(codeA);
-  const stringCodeB = analyzeCode(codeB);
+  const esprimaCodeA = analyzeCode(codeA);
+  const esprimaCodeB = analyzeCode(codeB);
 
-  const kGramA = kGram(stringCodeA);
-  const kGramB = kGram(stringCodeB);
+  const kGramA = kGram(esprimaCodeA);
+  const kGramB = kGram(esprimaCodeB);
 
-  const hashA = hashing(stringCodeA, 3, 5);
-  const hashB = hashing(stringCodeB, 3, 5);
+  const hashA = hashing(esprimaCodeA, 3, 5);
+  const hashB = hashing(esprimaCodeB, 3, 5);
 
   const resultA = fingerPrint(hashA);
   const resultB = fingerPrint(hashB);
 
   const resultSimilarity = similarityCheck(resultA, resultB);
-  return resultSimilarity;
+  return { resultSimilarity, esprimaCodeA, esprimaCodeB };
 }
 
 function similarityCheck(hashA, hashB) {

@@ -56,6 +56,7 @@ function analyzeCode(code) {
     if (node.type === 'UpdateExpression') node.type = 'V';
     if (node.type === 'UnaryExpression') node.type = 'W';
     if (node.type === 'BreakStatement') node.type = 'X';
+    if (node.type === 'ArrowFunctionExpression') node.type = 'Y';
 
     temp += node.type;
   });

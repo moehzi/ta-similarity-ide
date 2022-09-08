@@ -23,6 +23,7 @@ const codeSchema = mongoose.Schema({
     type: String,
     default: '',
   },
+  esprimaCode: { type: String, default: '' },
   similarityResult: [],
   courseId: { type: mongoose.Schema.Types.ObjectId, ref: 'Course' },
 });
