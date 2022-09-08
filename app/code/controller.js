@@ -4,6 +4,7 @@ const fs = require('fs');
 const Work = require('../works/model');
 const User = require('../users/model');
 const Code = require('./model');
+const RabinKarpJs = require('../../helper/RabinKarp');
 
 module.exports = {
   submitWork: async (req, res) => {
@@ -96,5 +97,40 @@ module.exports = {
     const code = await Code.find();
 
     return res.status(200).json({ code });
+  },
+
+  checkSimilarity: async (req, res) => {
+    const code = await Code.find({ workId: req.params.id }).populate('author');
+
+    const result = [];
+
+    code.forEach(async (v, index) => {
+      result.push({
+        id: v.author._id,
+        name: v.author.name,
+        similarityResult: [],
+      });
+      const similarityPercentage = [];
+      let studentAResult = {};
+      code.forEach((y) => {
+        if (v.author.name !== y.author.name) {
+          const similarityCheck = RabinKarpJs(v.jsCode, y.jsCode);
+          studentAResult = { name: y.author.name, percentage: similarityCheck };
+          similarityPercentage.push(similarityCheck);
+          result[index]['similarityResult'].push(studentAResult);
+        }
+      });
+      await Code.findOneAndUpdate(
+        { author: v.author._id, workId: req.params.id },
+        {
+          highestPercentage: `${Math.max(...similarityPercentage)}`,
+          similarityResult: result,
+        }
+      );
+    });
+    return res.status(200).json({
+      status: 'OK',
+      message: `Sucessfully check the similarity of this assignment`,
+    });
   },
 };

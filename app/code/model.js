@@ -19,10 +19,11 @@ const codeSchema = mongoose.Schema({
     required: [true, 'Status tidak boleh kosong'],
     default: 'Not Completed',
   },
-  result: {
+  highestPercentage: {
     type: String,
     default: '',
   },
+  similarityResult: [],
   courseId: { type: mongoose.Schema.Types.ObjectId, ref: 'Course' },
 });
 
