@@ -23,7 +23,7 @@ router.post(
 router.get(
   '/detail-work/:workId/student/:studentId',
   isAuth,
-  isRole(['teacher']),
+  isRole(['teacher', 'student']),
   detailStudentCode
 );
 
