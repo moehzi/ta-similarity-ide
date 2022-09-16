@@ -9,7 +9,6 @@ module.exports = {
 
     const user = await User.findOne({ _id: req.user.id }).select({
       encryptedPassword: 0,
-      courses: 0,
     });
 
     const work = await Work.find({ courseId: req.params.courseId });
@@ -85,5 +84,65 @@ module.exports = {
     } catch (error) {
       console.log(error.message);
     }
+  },
+
+  getListClass: async (req, res) => {
+    const classCourse = await Class.find().populate(
+      'students author works',
+      '-__v -encryptedPassword'
+    );
+
+    return res.status(200).json({
+      status: 'OK',
+      data: classCourse,
+    });
+  },
+
+  joinClass: async (req, res) => {
+    const classCourse = await Class.findOne({ _id: req.params.id }).populate(
+      'students works'
+    );
+
+    const user = await User.findOne({ _id: req.user.id });
+
+    const isExist = classCourse?.students.some(
+      (element) => element.registrationNumber === user.registrationNumber
+    );
+
+    if (isExist)
+      return res.status(400).json({
+        status: '400',
+        message: 'You are already join this class',
+      });
+
+    classCourse.works.map(async (v) => {
+      const codes = await Code({
+        htmlCode: '',
+        cssCode: '',
+        jsCode: '',
+        author: req.user.id,
+        status: 'Not Completed',
+        workId: v._id,
+        courseId: classCourse.courseId,
+      });
+      v.code.push(codes);
+      await codes.save();
+    });
+
+    classCourse.students.push(user);
+    user.classes.push(classCourse);
+    user.save();
+    classCourse.save();
+
+    if (!classCourse)
+      return res
+        .status(404)
+        .json({ status: 'Fail', message: 'Your class is not available' });
+
+    return res.status(200).json({
+      status: 'OK',
+      message: `Successfully join ${classCourse.name} class`,
+      data: classCourse,
+    });
   },
 };
