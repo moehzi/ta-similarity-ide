@@ -25,7 +25,7 @@ const codeSchema = mongoose.Schema({
   },
   esprimaCode: { type: String, default: '' },
   similarityResult: [],
-  courseId: { type: mongoose.Schema.Types.ObjectId, ref: 'Course' },
+  classId: { type: mongoose.Schema.Types.ObjectId, ref: 'Class' },
 });
 
 module.exports = mongoose.model('Code', codeSchema);

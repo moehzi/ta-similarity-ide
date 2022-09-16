@@ -7,6 +7,7 @@ const authRouter = require('./app/auth/router');
 const courseRouter = require('./app/courses/router');
 const codeRouter = require('./app/code/router');
 const workRouter = require('./app/works/router');
+const classRouter = require('./app/class/router');
 
 const app = express();
 app.use(cors());
@@ -20,6 +21,7 @@ app.use(userRouter);
 app.use(codeRouter);
 app.use(courseRouter);
 app.use(workRouter);
+app.use(classRouter);
 
 const PORT = process.env.PORT || '8080';
 

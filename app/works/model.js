@@ -14,7 +14,7 @@ const workSchema = mongoose.Schema({
     required: [true, 'Code Test tidak boleh kosong'],
   },
   code: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Code' }],
-  courseId: { type: mongoose.Schema.Types.ObjectId, ref: 'Course' },
+  classId: { type: mongoose.Schema.Types.ObjectId, ref: 'Class' },
   status: {
     type: String,
     default: 'Not ready to review',
