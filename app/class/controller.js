@@ -20,6 +20,7 @@ module.exports = {
       courseId: req.params.courseId,
     });
     classCourse.author.push(user);
+
     work.forEach((v) => classCourse.works.push(v));
     await classCourse.save();
 
