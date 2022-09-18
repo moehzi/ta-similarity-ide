@@ -14,11 +14,11 @@ const workSchema = mongoose.Schema({
     required: [true, 'Code Test tidak boleh kosong'],
   },
   code: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Code' }],
-  courseId: { type: mongoose.Schema.Types.ObjectId, ref: 'Course' },
   status: {
     type: String,
     default: 'Not ready to review',
   },
+  classId: { type: mongoose.Schema.Types.ObjectId, ref: 'Class' },
 });
 
 module.exports = mongoose.model('Work', workSchema);

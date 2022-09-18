@@ -1,17 +1,20 @@
 const Course = require('../courses/model');
 const Work = require('./model');
 const Code = require('../code/model.js');
+const Class = require('../class/model.js');
 
 module.exports = {
   createWork: async (req, res) => {
     try {
       const { name, description, codeTest } = req.body;
 
-      const course = await Course.findOne({ _id: req.params.id }).populate(
+      const classCourse = await Class.findOne({ _id: req.params.id }).populate(
         'author works students'
       );
 
-      const isAuthor = course?.author.some(
+      console.log(classCourse);
+
+      const isAuthor = classCourse?.author.some(
         (element) => element.id === req.user.id
       );
 
@@ -24,12 +27,12 @@ module.exports = {
       const work = await Work({
         name,
         description,
-        courseId: course._id,
+        classId: classCourse._id,
         codeTest,
       });
 
-      if (course.students.length > 0) {
-        course.students.map(async (v) => {
+      if (classCourse.students.length > 0) {
+        classCourse.students.map(async (v) => {
           const codes = await Code({
             htmlCode: '',
             cssCode: '',
@@ -37,16 +40,16 @@ module.exports = {
             author: v._id,
             status: 'Not Completed',
             workId: work._id,
-            courseId: course._id,
+            classId: classCourse._id,
           });
           work.code.push(codes);
           await codes.save();
         });
       }
 
-      course.works.push(work);
+      classCourse.works.push(work);
       await work.save();
-      await course.save();
+      await classCourse.save();
 
       return res.status(200).json({
         status: 'OK',
