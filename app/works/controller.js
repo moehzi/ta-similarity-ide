@@ -100,4 +100,22 @@ module.exports = {
       console.log(error.message);
     }
   },
+
+  changeVisibleWork: async (req, res) => {
+    try {
+      const work = await Work.findOne({ _id: req.params.id });
+
+      await Work.findOneAndUpdate(
+        { _id: req.params.id },
+        { isVisible: !work.isVisible }
+      );
+
+      return res.status(200).json({
+        status: 'OK',
+        message: 'Succesfully change the visible of work',
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  },
 };

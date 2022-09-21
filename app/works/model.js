@@ -20,6 +20,7 @@ const workSchema = mongoose.Schema({
   },
   classId: { type: mongoose.Schema.Types.ObjectId, ref: 'Class' },
   courseId: { type: mongoose.Schema.Types.ObjectId, ref: 'Class' },
+  isVisible: { type: Boolean, default: true },
 });
 
 module.exports = mongoose.model('Work', workSchema);
