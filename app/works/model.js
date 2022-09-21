@@ -19,6 +19,7 @@ const workSchema = mongoose.Schema({
     default: 'Not ready to review',
   },
   classId: { type: mongoose.Schema.Types.ObjectId, ref: 'Class' },
+  courseId: { type: mongoose.Schema.Types.ObjectId, ref: 'Class' },
 });
 
 module.exports = mongoose.model('Work', workSchema);

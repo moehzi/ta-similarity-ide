@@ -7,6 +7,7 @@ const {
   getListWorkOfClass,
   getListClass,
   joinClass,
+  getMyClass,
 } = require('./controller');
 var router = express.Router();
 
@@ -25,5 +26,7 @@ router.get(
 );
 
 router.get('/class', getListClass);
+router.get('/my-class', isAuth, isRole(['teacher', 'student']), getMyClass);
 router.post('/join-class/:id', isAuth, isRole(['student']), joinClass);
+
 module.exports = router;
