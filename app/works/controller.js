@@ -23,7 +23,7 @@ module.exports = {
       //       status: 'FORBIDDEN',
       //       message: 'You are not the author of this course',
       //     });
-      const boleh = courseClass.map(async (singleClass) => {
+      courseClass.map(async (singleClass) => {
         const work = await Work({
           name,
           description,

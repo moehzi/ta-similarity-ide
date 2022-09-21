@@ -59,13 +59,13 @@ module.exports = {
 
       const code = await Code.find({
         author: req.user.id,
-        courseId: req.params.id,
+        classId: req.params.id,
       }).populate('workId');
       //   const statusCode = code.map((v) => v.status);
 
       const codeTeacher = await Code.find({
         author: req.user.id,
-        courseId: req.params.id,
+        classId: req.params.id,
       }).populate({ path: 'workId', populate: { path: 'code' } });
 
       const getStatus = codeTeacher.map((v) => v.status);
@@ -113,6 +113,8 @@ module.exports = {
       'students works'
     );
 
+    console.log(classCourse, 'joinclass');
+
     const user = await User.findOne({ _id: req.user.id });
 
     const isExist = classCourse?.students.some(
@@ -133,7 +135,7 @@ module.exports = {
         author: req.user.id,
         status: 'Not Completed',
         workId: v._id,
-        classId: classCourse.classId,
+        classId: req.params.id,
       });
       v.code.push(codes);
       await codes.save();
@@ -142,8 +144,8 @@ module.exports = {
     classCourse.students.push(user);
     user.classes.push(classCourse);
 
-    user.save();
-    classCourse.save();
+    await user.save();
+    await classCourse.save();
 
     if (!classCourse)
       return res
