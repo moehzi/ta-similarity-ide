@@ -24,8 +24,6 @@ module.exports = {
 
     classCourse.author.push(user);
     course.classes.push(classCourse);
-    console.log(course, 'ini course');
-    console.log(classCourse, 'ini classCourse');
 
     work.forEach((v) => classCourse.works.push(v));
     await classCourse.save();
@@ -55,8 +53,6 @@ module.exports = {
         'author works'
       );
 
-      console.log(classCourse);
-
       const code = await Code.find({
         author: req.user.id,
         classId: req.params.id,
@@ -75,6 +71,21 @@ module.exports = {
           { status: 'Ready to review' }
         );
       }
+
+      classCourse.works.forEach(async (v) => {
+        const todayTimestamp = parseInt(
+          (new Date().getTime() / 1000).toFixed(0)
+        );
+
+        if (v.deadline < todayTimestamp) {
+          await Work.findOneAndUpdate(
+            {
+              _id: v._id,
+            },
+            { status: 'Ready to review' }
+          );
+        }
+      });
 
       if (req.user.role === 'teacher') {
         return res.status(200).json({
@@ -112,8 +123,6 @@ module.exports = {
     const classCourse = await Class.findOne({ _id: req.params.id }).populate(
       'students works'
     );
-
-    console.log(classCourse, 'joinclass');
 
     const user = await User.findOne({ _id: req.user.id });
 

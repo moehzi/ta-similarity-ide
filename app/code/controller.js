@@ -27,7 +27,7 @@ module.exports = {
       }).populate({ path: 'workId', populate: { path: 'code' } });
 
       const getStatus = codeTeacher.map((v) => v.status);
-      console.log(getStatus);
+
       if (!getStatus.includes('Not Completed')) {
         await Work.findOneAndUpdate(
           { _id: req.params.id },
@@ -66,7 +66,6 @@ module.exports = {
         fs.writeFile('./program.js', js, () => {
           MochaTester('./program_test.js')
             .then((pass) => {
-              console.log(pass, 'ini pass');
               let testedJsCode = pass.results.every((test) => test);
               clearCache();
               return res.status(200).json({

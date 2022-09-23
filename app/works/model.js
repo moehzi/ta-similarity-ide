@@ -18,6 +18,7 @@ const workSchema = mongoose.Schema({
     type: String,
     default: 'Not ready to review',
   },
+  deadline: { type: Number, required: [true, 'Deadline tidak boleh kosong'] },
   classId: { type: mongoose.Schema.Types.ObjectId, ref: 'Class' },
   courseId: { type: mongoose.Schema.Types.ObjectId, ref: 'Class' },
   isVisible: { type: Boolean, default: true },

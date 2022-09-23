@@ -6,7 +6,7 @@ const Class = require('../class/model.js');
 module.exports = {
   createWork: async (req, res) => {
     try {
-      const { name, description, codeTest } = req.body;
+      const { name, description, codeTest, deadline } = req.body;
 
       const classCourse = await Class.findOne({ _id: req.params.id }).populate(
         'author works students'
@@ -29,8 +29,11 @@ module.exports = {
           description,
           classId: singleClass._id,
           codeTest,
+          deadline,
           courseId: classCourse.courseId,
         });
+
+        console.log('mantul');
 
         if (singleClass.students.length > 0) {
           singleClass.students.map(async (student) => {
