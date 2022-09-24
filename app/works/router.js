@@ -6,6 +6,7 @@ const {
   getListWorkOfCourse,
   getWorkById,
   changeVisibleWork,
+  editWork,
 } = require('./controller');
 var router = express.Router();
 
@@ -18,5 +19,6 @@ router.post(
   isRole(['teacher']),
   changeVisibleWork
 );
+router.put('/works/:id', isAuth, isRole(['teacher']), editWork);
 
 module.exports = router;

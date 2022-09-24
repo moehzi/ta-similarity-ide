@@ -85,6 +85,24 @@ module.exports = {
     }
   },
 
+  editWork: async (req, res) => {
+    try {
+      const { name, description, codeTest, deadline } = req.body;
+      const work = await Work.findOneAndUpdate(
+        { _id: req.params.id },
+        { name, description, codeTest, deadline }
+      );
+
+      return res.status(200).json({
+        status: 'OK',
+        message: 'Succesfully update work',
+        data: work,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
   getWorkById: async (req, res) => {
     try {
       const work = await Work.findById({ _id: req.params.id }).populate({

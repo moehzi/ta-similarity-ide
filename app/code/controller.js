@@ -10,16 +10,6 @@ module.exports = {
   submitWork: async (req, res) => {
     const { htmlCode, cssCode, jsCode } = req.body;
     try {
-      const code = await Code.findOneAndUpdate(
-        { author: req.user.id, workId: req.params.id },
-        {
-          cssCode: cssCode,
-          htmlCode: htmlCode,
-          jsCode: jsCode,
-          status: 'Completed',
-        }
-      );
-
       const user = await User.findOne({ _id: req.user.id });
 
       const codeTeacher = await Code.find({
@@ -35,11 +25,38 @@ module.exports = {
         );
       }
 
+      const work = await Work.findOne({ _id: req.params.id });
+
+      const todayTimestamp = parseInt((new Date().getTime() / 1000).toFixed(0));
+
+      if (todayTimestamp > work.deadline) {
+        await Work.findOneAndUpdate(
+          { _id: req.params.id },
+          { status: 'Ready to review' }
+        );
+
+        return res.status(401).json({
+          status: 'Fail',
+          message:
+            "Deadline is already end. You can't submit this work anymore.",
+        });
+      }
+
+      if (!todayTimestamp > work.deadline) {
+        await Code.findOneAndUpdate(
+          { author: req.user.id, workId: req.params.id },
+          {
+            cssCode: cssCode,
+            htmlCode: htmlCode,
+            jsCode: jsCode,
+            status: 'Completed',
+          }
+        );
+      }
+
       return res.status(200).json({
         status: 'OK',
         message: 'Successfully submit work',
-        data: code,
-        teacherCode: codeTeacher,
       });
     } catch (error) {
       console.log(error.message);
