@@ -168,6 +168,24 @@ module.exports = {
     });
   },
 
+  getCourseById: async (req, res) => {
+    try {
+      const { name } = req.body;
+
+      const course = await Course.findOneAndUpdate(
+        { _id: req.params.id },
+        { name: name }
+      );
+
+      return res.status(200).json({
+        status: 'OK',
+        data: course,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
   getCourseswithStudents: async (req, res) => {
     const course = await Course.find().populate(
       'students author works',

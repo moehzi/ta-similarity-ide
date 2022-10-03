@@ -8,7 +8,7 @@ const coursesSchema = mongoose.Schema({
   },
   author: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
   students: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
-  classes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+  classes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Class' }],
   works: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Work' }],
 });
 
