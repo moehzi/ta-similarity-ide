@@ -12,12 +12,12 @@ module.exports = {
   },
 
   getTeacher: async (req, res) => {
-    const user = await User.find({ role: 'teacher' }).select({
+    const teacher = await User.find({ role: 'teacher' }).select({
       encryptedPassword: 0,
       __v: 0,
     });
 
-    const teacher = user.filter((v) => v._id.toString() !== req.user.id);
+    // const teacher = user.filter((v) => v._id.toString() !== req.user.id);
 
     return res.status(200).json({
       status: 'OK',

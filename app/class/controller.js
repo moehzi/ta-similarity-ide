@@ -36,6 +36,37 @@ module.exports = {
     });
   },
 
+  editClass: async (req, res) => {
+    const { name, author } = req.body;
+
+    const classCourse = await Class.findOneAndUpdate(
+      { _id: req.params.id },
+      { name, author }
+    );
+
+    const user = await User.findOne({ _id: req.user.id }).select({
+      encryptedPassword: 0,
+      courses: 0,
+    });
+
+    // const isAuthor = await Course.findOne({ author: { _id: req.user.id } });
+
+    // if (!isAuthor)
+    //   return res.status(403).json({
+    //     status: 'FORBIDDEN',
+    //     message: 'You are not the author of this course',
+    //   });
+
+    if (!classCourse)
+      return res.status(404).json({ status: 'Fail', message: 'Not found' });
+
+    return res.status(200).json({
+      status: 'OK',
+      message: 'Your updated sucessfully',
+      data: { name: name, author: author },
+    });
+  },
+
   getClassByCourseId: async (req, res) => {
     const classCourse = await Class.find({
       courseId: req.params.courseId,
