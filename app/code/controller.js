@@ -12,19 +12,6 @@ module.exports = {
     try {
       const user = await User.findOne({ _id: req.user.id });
 
-      const codeTeacher = await Code.find({
-        workId: req.params.id,
-      }).populate({ path: 'workId', populate: { path: 'code' } });
-
-      const getStatus = codeTeacher.map((v) => v.status);
-
-      if (!getStatus.includes('Not Completed')) {
-        await Work.findOneAndUpdate(
-          { _id: req.params.id },
-          { status: 'Ready to review' }
-        );
-      }
-
       const work = await Work.findOne({ _id: req.params.id });
 
       const todayTimestamp = parseInt((new Date().getTime() / 1000).toFixed(0));
@@ -42,7 +29,7 @@ module.exports = {
         });
       }
 
-      if (!todayTimestamp > work.deadline) {
+      if (todayTimestamp < work.deadline) {
         await Code.findOneAndUpdate(
           { author: req.user.id, workId: req.params.id },
           {
@@ -54,12 +41,27 @@ module.exports = {
         );
       }
 
+      const codeTeacher = await Code.find({
+        workId: req.params.id,
+      }).populate({ path: 'workId', populate: { path: 'code' } });
+
+      const getStatus = codeTeacher.map((v) => v.status);
+
+      if (!getStatus.includes('Not Completed')) {
+        await Work.findOneAndUpdate(
+          { _id: req.params.id },
+          { status: 'Ready to review' }
+        );
+      }
+
       return res.status(200).json({
         status: 'OK',
         message: 'Successfully submit work',
       });
     } catch (error) {
-      console.log(error.message);
+      return res.status(500).json({
+        error: error,
+      });
     }
   },
 
@@ -150,7 +152,7 @@ module.exports = {
         }
       );
     });
-    return res.status(200).json({
+    return await res.status(200).json({
       status: 'OK',
       message: `Sucessfully check the similarity of this assignment`,
     });

@@ -103,6 +103,30 @@ module.exports = {
     }
   },
 
+  deleteWork: async (req, res) => {
+    try {
+      const work = await Work.findOneAndRemove({ _id: req.params.id });
+
+      const isAuthor = await Work.findOne({ author: { _id: req.user.id } });
+
+      if (!isAuthor)
+        return res.status(403).json({
+          status: 'FORBIDDEN',
+          message: 'You are not the author of this course',
+        });
+
+      if (!work)
+        return res.status(404).json({ status: 'Fail', message: 'Not found' });
+
+      return res.status(200).json({
+        status: 'OK',
+        message: 'Delete sucessfully',
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
   getWorkById: async (req, res) => {
     try {
       const work = await Work.findById({ _id: req.params.id }).populate({

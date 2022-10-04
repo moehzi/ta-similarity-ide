@@ -9,6 +9,7 @@ const {
   joinClass,
   getMyClass,
   editClass,
+  deleteClass,
 } = require('./controller');
 var router = express.Router();
 
@@ -26,6 +27,7 @@ router.get(
   getListWorkOfClass
 );
 router.put('/class/:id', isAuth, isRole(['teacher']), editClass);
+router.delete('/class/:id', isAuth, isRole(['teacher']), deleteClass);
 
 router.get('/class', getListClass);
 router.get('/my-class', isAuth, isRole(['teacher', 'student']), getMyClass);

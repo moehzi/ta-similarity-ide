@@ -67,6 +67,26 @@ module.exports = {
     });
   },
 
+  deleteClass: async (req, res) => {
+    const classCourse = await Class.findOneAndRemove({ _id: req.params.id });
+
+    const isAuthor = await Class.findOne({ author: { _id: req.user.id } });
+
+    if (!isAuthor)
+      return res.status(403).json({
+        status: 'FORBIDDEN',
+        message: 'You are not the author of this course',
+      });
+
+    if (!classCourse)
+      return res.status(404).json({ status: 'Fail', message: 'Not found' });
+
+    return res.status(200).json({
+      status: 'OK',
+      message: 'Delete sucessfully',
+    });
+  },
+
   getClassByCourseId: async (req, res) => {
     const classCourse = await Class.find({
       courseId: req.params.courseId,
@@ -91,7 +111,6 @@ module.exports = {
       //   const statusCode = code.map((v) => v.status);
 
       const codeTeacher = await Code.find({
-        author: req.user.id,
         classId: req.params.id,
       }).populate({ path: 'workId', populate: { path: 'code' } });
 
