@@ -13,7 +13,7 @@ module.exports = {
     });
 
     const course = await Course.findOne({ _id: req.params.courseId });
-    const work = await Work.find({ classId: course.classes[0] });
+    // const work = await Work.find({ classId: course.classes[0] });
 
     const classCourse = await Class({
       name,
@@ -24,7 +24,7 @@ module.exports = {
     classCourse.author.push(user);
     course.classes.push(classCourse);
 
-    work.forEach((v) => classCourse.works.push(v));
+    // work.forEach((v) => classCourse.works.push(v));
     await classCourse.save();
     await course.save();
 
