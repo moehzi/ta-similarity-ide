@@ -128,7 +128,7 @@ module.exports = {
       let esprimaCodeStudentA = '';
       code.forEach((y) => {
         if (v.author.name !== y.author.name) {
-          if (algorithm === 'Rabin Karp') {
+          if (algorithm === 'RabinKarp') {
             const { resultSimilarity, esprimaCodeB, esprimaCodeA } =
               RabinKarpJs(v.jsCode, y.jsCode);
             esprimaCodeStudentA = esprimaCodeA;
@@ -140,10 +140,10 @@ module.exports = {
               jsCode: y.jsCode,
             });
           }
-          if (algorithm === 'Jaro Wrinker') {
+          if (algorithm === 'JaroWinkler') {
             const studentA = analyzeCode(v.jsCode);
             const studentB = analyzeCode(y.jsCode);
-            const resultSimilarity = JaroWrinker(studentA, studentB);
+            const resultSimilarity = JaroWrinker(studentA, studentB) * 100;
             esprimaCodeStudentA = studentA;
             similarityPercentage.push(resultSimilarity);
             similarityResult.push({

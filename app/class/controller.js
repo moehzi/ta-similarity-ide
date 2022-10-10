@@ -14,7 +14,6 @@ module.exports = {
 
     const course = await Course.findOne({ _id: req.params.courseId });
     const work = await Work.find({ classId: course.classes[0] });
-    // console.log('ini work', work);
 
     const classCourse = await Class({
       name,
