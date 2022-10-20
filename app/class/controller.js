@@ -194,6 +194,7 @@ module.exports = {
         status: 'Not Completed',
         workId: v._id,
         classId: req.params.id,
+        courseId: classCourse.courseId,
       });
       v.code.push(codes);
       await codes.save();

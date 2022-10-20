@@ -72,6 +72,7 @@ module.exports = {
       let jsTest = `
 	const chai = require("chai");
 	const resnap = require("resnap")();
+	const JSDOM = require('jsdom').JSDOM;
 	`;
 
       const clearCache = require('resnap')();
@@ -80,9 +81,14 @@ module.exports = {
 
       await Work.findOne({ _id: req.params.id }, (err, doc) => {
         const js = req.body.jsCode;
-        jsTest += js;
-        jsTest += doc.codeTest;
+        const html = req.body.htmlCode;
 
+        jsTest += `
+			const document = new JSDOM(${html}).window.document;	
+			const window = new JSDOM(${html}).window
+			${js}
+			${doc.codeTest}
+		  `;
         fs.writeFileSync('program_test.js', jsTest);
         fs.writeFile('./program.js', js, () => {
           MochaTester('./program_test.js')
@@ -120,58 +126,64 @@ module.exports = {
   },
 
   checkSimilarity: async (req, res) => {
-    const { algorithm } = req.body;
-    const code = await Code.find({ workId: req.params.id }).populate('author');
-    code.forEach(async (v, index) => {
-      const similarityPercentage = [];
-      const similarityResult = [];
-      let esprimaCodeStudentA = '';
-      code.forEach((y) => {
-        if (v.author.name !== y.author.name) {
-          if (algorithm === 'RabinKarp') {
-            const { resultSimilarity, esprimaCodeB, esprimaCodeA } =
-              RabinKarpJs(v.jsCode, y.jsCode);
-            esprimaCodeStudentA = esprimaCodeA;
-            similarityPercentage.push(resultSimilarity);
-            similarityResult.push({
-              name: y.author.name,
-              percentage: resultSimilarity,
-              esprimaCode: esprimaCodeB,
-              jsCode: y.jsCode,
-            });
+    try {
+      const { algorithm } = req.body;
+      const code = await Code.find({ workId: req.params.id }).populate(
+        'author'
+      );
+      code.forEach(async (v, index) => {
+        const similarityPercentage = [];
+        const similarityResult = [];
+        let esprimaCodeStudentA = '';
+        code.forEach(async (y) => {
+          if (v.author.name !== y.author.name) {
+            if (algorithm === 'RabinKarp') {
+              const { resultSimilarity, esprimaCodeB, esprimaCodeA } =
+                RabinKarpJs(v.jsCode, y.jsCode);
+              esprimaCodeStudentA = esprimaCodeA;
+              similarityPercentage.push(resultSimilarity);
+              similarityResult.push({
+                name: y.author.name,
+                percentage: resultSimilarity,
+                esprimaCode: esprimaCodeB,
+                jsCode: y.jsCode,
+              });
+            }
+            if (algorithm === 'JaroWinkler') {
+              const studentA = analyzeCode(v.jsCode);
+              const studentB = analyzeCode(y.jsCode);
+              const resultSimilarity = JaroWrinker(studentA, studentB) * 100;
+              esprimaCodeStudentA = studentA;
+              similarityPercentage.push(resultSimilarity);
+              similarityResult.push({
+                name: y.author.name,
+                percentage: resultSimilarity,
+                esprimaCode: studentB,
+                jsCode: y.jsCode,
+              });
+            }
           }
-          if (algorithm === 'JaroWinkler') {
-            const studentA = analyzeCode(v.jsCode);
-            const studentB = analyzeCode(y.jsCode);
-            const resultSimilarity = JaroWrinker(studentA, studentB) * 100;
-            esprimaCodeStudentA = studentA;
-            similarityPercentage.push(resultSimilarity);
-            similarityResult.push({
-              name: y.author.name,
-              percentage: resultSimilarity,
-              esprimaCode: studentB,
-              jsCode: y.jsCode,
-            });
+        });
+        await Work.findOneAndUpdate(
+          { _id: req.params.id },
+          { status: 'Finished', algorithmSimilarity: algorithm }
+        );
+        await Code.findOneAndUpdate(
+          { author: v.author._id, workId: req.params.id },
+          {
+            esprimaCode: esprimaCodeStudentA,
+            highestPercentage: `${Math.max(...similarityPercentage)}`,
+            similarityResult: similarityResult,
           }
-        }
+        );
       });
-      await Work.findOneAndUpdate(
-        { _id: req.params.id },
-        { status: 'Finished', algorithmSimilarity: algorithm }
-      );
-      await Code.findOneAndUpdate(
-        { author: v.author._id, workId: req.params.id },
-        {
-          esprimaCode: esprimaCodeStudentA,
-          highestPercentage: `${Math.max(...similarityPercentage)}`,
-          similarityResult: similarityResult,
-        }
-      );
-    });
-    return await res.status(200).json({
-      status: 'OK',
-      message: `Sucessfully check the similarity of this assignment`,
-    });
+      return await res.status(200).json({
+        status: 'OK',
+        message: `Sucessfully check the similarity of this assignment`,
+      });
+    } catch (error) {
+      console.log(error);
+    }
   },
 
   detailStudentCode: async (req, res) => {

@@ -45,6 +45,7 @@ module.exports = {
               status: 'Not Completed',
               workId: work._id,
               classId: singleClass._id,
+              courseId: classCourse.courseId,
             });
             work.code.push(codes);
             await codes.save();
