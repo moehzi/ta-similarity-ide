@@ -98,7 +98,10 @@ module.exports = {
   getClassByCourseId: async (req, res) => {
     const classCourse = await Class.find({
       courseId: req.params.courseId,
+      author: req.user.id,
     }).populate('author works');
+
+    const filtered = classCourse.filter((v) => console.log('awal', v, 'akhir'));
 
     return res.status(200).json({
       status: 'OK',
@@ -108,9 +111,9 @@ module.exports = {
 
   getListWorkOfClass: async (req, res) => {
     try {
-      const classCourse = await Class.findOne({ _id: req.params.id }).populate(
-        'author works'
-      );
+      const classCourse = await Class.findOne({
+        _id: req.params.id,
+      }).populate('author works');
 
       const code = await Code.find({
         author: req.user.id,
