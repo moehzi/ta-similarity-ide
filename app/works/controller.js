@@ -8,11 +8,14 @@ module.exports = {
     try {
       const { name, description, codeTest, deadline } = req.body;
 
-      const classCourse = await Class.findOne({ _id: req.params.id }).populate(
-        'author works students'
-      );
+      const classCourse = await Class.findOne({
+        _id: req.params.id,
+      }).populate('author works students');
 
-      const courseClass = await Class.find({ courseId: classCourse.courseId });
+      const courseClass = await Class.find({
+        courseId: classCourse.courseId,
+        author: req.user.id,
+      });
 
       //   const isAuthor = classCourse?.author.some(
       //     (element) => element.id === req.user.id
