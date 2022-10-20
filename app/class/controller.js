@@ -8,10 +8,6 @@ module.exports = {
   createClass: async (req, res) => {
     const { name, author } = req.body;
 
-    const user = await User.findOne({ _id: req.user.id }).select({
-      encryptedPassword: 0,
-    });
-
     const course = await Course.findOne({ _id: req.params.courseId });
     // const work = await Work.find({ classId: course.classes[0] });
 
@@ -21,12 +17,25 @@ module.exports = {
       courseId: req.params.courseId,
     });
 
-    classCourse.author.push(user);
+    // classCourse.author.forEach((v) => {});
+    classCourse.author.map(async (v) => {
+      const user = await User.findOne({ _id: v._id });
+      user.classes.push(classCourse);
+      await user.save();
+    });
+
     course.classes.push(classCourse);
+    const filteredAuthor = author.filter((v) => v !== req.user.id);
+
+    // check if Author is not user logged in.
+    if (filteredAuthor.length) {
+      course.author.push(filteredAuthor);
+    }
 
     // work.forEach((v) => classCourse.works.push(v));
     await classCourse.save();
     await course.save();
+    // await user.save();
 
     return res.status(200).json({
       status: 'OK',
