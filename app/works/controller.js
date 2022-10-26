@@ -2,6 +2,7 @@ const Course = require('../courses/model');
 const Work = require('./model');
 const Code = require('../code/model.js');
 const Class = require('../class/model.js');
+const { default: mongoose } = require('mongoose');
 
 module.exports = {
   createWork: async (req, res) => {
@@ -26,17 +27,18 @@ module.exports = {
       //       status: 'FORBIDDEN',
       //       message: 'You are not the author of this course',
       //     });
+
+      const exerciseId = new mongoose.Types.ObjectId();
       courseClass.map(async (singleClass) => {
         const work = await Work({
           name,
           description,
           classId: singleClass._id,
           codeTest,
+          exerciseId,
           deadline,
           courseId: classCourse.courseId,
         });
-
-        console.log('mantul');
 
         if (singleClass.students.length > 0) {
           singleClass.students.map(async (student) => {

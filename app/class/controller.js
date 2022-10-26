@@ -101,8 +101,6 @@ module.exports = {
       author: req.user.id,
     }).populate('author works');
 
-    const filtered = classCourse.filter((v) => console.log('awal', v, 'akhir'));
-
     return res.status(200).json({
       status: 'OK',
       data: classCourse,

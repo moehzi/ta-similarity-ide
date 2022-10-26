@@ -21,6 +21,7 @@ const workSchema = mongoose.Schema({
   algorithmSimilarity: { type: String },
   deadline: { type: Number, required: [true, 'Deadline tidak boleh kosong'] },
   classId: { type: mongoose.Schema.Types.ObjectId, ref: 'Class' },
+  exerciseId: { type: mongoose.Schema.Types.ObjectId },
   courseId: { type: mongoose.Schema.Types.ObjectId, ref: 'Class' },
   isVisible: { type: Boolean, default: true },
 });
