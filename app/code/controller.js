@@ -20,10 +20,10 @@ module.exports = {
       const todayTimestamp = parseInt((new Date().getTime() / 1000).toFixed(0));
 
       if (todayTimestamp > work.deadline) {
-        await Work.findOneAndUpdate(
-          { _id: req.params.id },
-          { status: 'Ready to review' }
-        );
+        // await Work.findOneAndUpdate(
+        //   { _id: req.params.id },
+        //   { status: 'Ready to review' }
+        // );
 
         return res.status(401).json({
           status: 'Fail',
@@ -236,7 +236,9 @@ module.exports = {
               if (algorithm === 'JaroWinkler') {
                 const studentA = analyzeCode(v.jsCode);
                 const studentB = analyzeCode(y.jsCode);
-                const resultSimilarity = JaroWrinker(studentA, studentB) * 100;
+                const resultSimilarity = (
+                  JaroWrinker(studentA, studentB) * 100
+                ).toFixed(2);
                 esprimaCodeStudentA = studentA;
                 similarityPercentage.push(resultSimilarity);
                 similarityResult.push({

@@ -136,7 +136,7 @@ module.exports = {
           (new Date().getTime() / 1000).toFixed(0)
         );
 
-        if (v.deadline < todayTimestamp) {
+        if (v.deadline < todayTimestamp && v.status !== 'Finished') {
           await Work.findOneAndUpdate(
             {
               _id: v._id,
