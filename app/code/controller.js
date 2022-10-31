@@ -85,8 +85,8 @@ module.exports = {
         const html = req.body.htmlCode;
 
         jsTest += `
-			const document = new JSDOM(${html}).window.document;	
-			const window = new JSDOM(${html}).window
+			const window = new JSDOM(\`${html}\`).window;	
+			const document = new JSDOM(\`${html}\`).window.document;	
 			${js}
 			${doc.codeTest}
 		  `;

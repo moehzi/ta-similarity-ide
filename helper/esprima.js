@@ -26,12 +26,9 @@ function traverse(node, func) {
 function analyzeCode(code) {
   var ast = esprima.parse(code);
   // console.log(esprima.parse(code));
-  //console.log(ast);
-  //return JSON.stringify(ast);
-  // console.log(ast.body[0]);
+
   let temp = '';
   traverse(ast, function (node) {
-    // console.log(node.type);
     if (node.type === 'Program') node.type = 'A';
     if (node.type === 'AssignmentExpression') node.type = 'B';
     if (node.type === 'BinaryExpression') node.type = 'C';
@@ -57,6 +54,9 @@ function analyzeCode(code) {
     if (node.type === 'UnaryExpression') node.type = 'W';
     if (node.type === 'BreakStatement') node.type = 'X';
     if (node.type === 'ArrowFunctionExpression') node.type = 'Y';
+    if (node.type === 'TemplateLiteral') node.type = 'Z';
+    if (node.type === 'TemplateElement') node.type = 'AB';
+    if (node.type === undefined) node.type = 'UN';
 
     temp += node.type;
   });
