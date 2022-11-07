@@ -3,45 +3,51 @@ const User = require('../users/model');
 const Work = require('../works/model');
 const Code = require('../code/model');
 const Course = require('../courses/model');
+const mongoose = require('mongoose');
 
 module.exports = {
   createClass: async (req, res) => {
-    const { name, author } = req.body;
+    try {
+      const { name, author } = req.body;
 
-    const course = await Course.findOne({ _id: req.params.courseId });
-    // const work = await Work.find({ classId: course.classes[0] });
+      const course = await Course.findById({ _id: req.params.courseId });
+      // const work = await Work.find({ classId: course.classes[0] });
+      //   const authorArr = author.map((v) => mongoose.Types.ObjectId(v));
 
-    const classCourse = await Class({
-      name,
-      author,
-      courseId: req.params.courseId,
-    });
+      // console.log(authorArr, 'ini author Arr');
 
-    // classCourse.author.forEach((v) => {});
-    classCourse.author.map(async (v) => {
-      const user = await User.findOne({ _id: v._id });
-      user.classes.push(classCourse);
-      await user.save();
-    });
+      const classCourse = await Class.create({
+        name,
+        author: author,
+        courseId: req.params.courseId,
+      });
 
-    course.classes.push(classCourse);
-    const filteredAuthor = author.filter((v) => v !== req.user.id);
+      await classCourse.save();
 
-    // check if Author is not user logged in.
-    if (filteredAuthor.length) {
-      course.author.push(filteredAuthor);
+      classCourse.author.forEach(async (v) => {
+        const user = await User.findOne({ _id: v._id });
+        user.classes.push(classCourse);
+        await user.save();
+      });
+
+      course.classes.push(classCourse);
+
+      const filteredAuthor = author.filter((v) => v !== req.user.id);
+
+      // check if Author is not user logged in.
+      if (filteredAuthor.length > 0) {
+        course.author.push(...filteredAuthor);
+      }
+      await course.save();
+
+      return res.status(200).json({
+        status: 'OK',
+        message: 'Successfully created class',
+        data: classCourse,
+      });
+    } catch (error) {
+      console.log(error);
     }
-
-    // work.forEach((v) => classCourse.works.push(v));
-    await classCourse.save();
-    await course.save();
-    // await user.save();
-
-    return res.status(200).json({
-      status: 'OK',
-      message: 'Successfully created class',
-      data: classCourse,
-    });
   },
 
   editClass: async (req, res) => {
