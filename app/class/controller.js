@@ -82,14 +82,20 @@ module.exports = {
   },
 
   deleteClass: async (req, res) => {
+    const getClass = await Class.findOne({ _id: req.params.id }).populate(
+      'author'
+    );
+
     const classCourse = await Class.findOneAndRemove({ _id: req.params.id });
 
-    const isAuthor = await Class.findOne({ author: { _id: req.user.id } });
+    const isAuthor = getClass.author.some(
+      (e) => e._id.toString() === req.user.id
+    );
 
     if (!isAuthor)
       return res.status(403).json({
         status: 'FORBIDDEN',
-        message: 'You are not the author of this course',
+        message: 'You are not the author of this class',
       });
 
     if (!classCourse)

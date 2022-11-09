@@ -24,14 +24,20 @@ module.exports = {
   },
 
   deleteCourse: async (req, res) => {
+    const getCourse = await Course.findOne({ _id: req.params.id }).populate(
+      'author'
+    );
     const course = await Course.findOneAndRemove({ _id: req.params.id });
 
-    const isAuthor = await Course.findOne({ author: { _id: req.user.id } });
+    const isAuthor = getCourse.author.some(
+      (e) => e._id.toString() === req.user.id
+    );
+    console.log(isAuthor, 'author ini bos');
 
     if (!isAuthor)
       return res.status(403).json({
         status: 'FORBIDDEN',
-        message: 'You are not the author of this course',
+        message: 'You are not the author of this coursedd',
       });
 
     if (!course)
