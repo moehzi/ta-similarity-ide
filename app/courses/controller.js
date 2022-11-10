@@ -32,7 +32,6 @@ module.exports = {
     const isAuthor = getCourse.author.some(
       (e) => e._id.toString() === req.user.id
     );
-    console.log(isAuthor, 'author ini bos');
 
     if (!isAuthor)
       return res.status(403).json({
@@ -130,7 +129,7 @@ module.exports = {
 
   getMyCourse: async (req, res) => {
     const course = await Course.find({ author: { _id: req.user.id } }).populate(
-      'students author',
+      'students author classes',
       '-courses -encryptedPassword'
     );
 
