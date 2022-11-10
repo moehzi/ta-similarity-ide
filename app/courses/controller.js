@@ -27,7 +27,7 @@ module.exports = {
     const getCourse = await Course.findOne({ _id: req.params.id }).populate(
       'author'
     );
-    const course = await Course.findOneAndRemove({ _id: req.params.id });
+    const course = await Course.findOneAndDelete({ _id: req.params.id });
 
     const isAuthor = getCourse.author.some(
       (e) => e._id.toString() === req.user.id

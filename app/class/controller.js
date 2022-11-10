@@ -86,7 +86,7 @@ module.exports = {
       'author'
     );
 
-    const classCourse = await Class.findOneAndRemove({ _id: req.params.id });
+    const classCourse = await Class.findOneAndDelete({ _id: req.params.id });
 
     const isAuthor = getClass.author.some(
       (e) => e._id.toString() === req.user.id

@@ -111,7 +111,7 @@ module.exports = {
 
   deleteWork: async (req, res) => {
     try {
-      const work = await Work.findOneAndRemove({ _id: req.params.id });
+      const work = await Work.findOneAndDelete({ _id: req.params.id });
 
       const isAuthor = await Work.findOne({ author: { _id: req.user.id } });
 
