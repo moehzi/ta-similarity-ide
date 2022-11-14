@@ -13,6 +13,9 @@ const workSchema = mongoose.Schema({
     type: String,
     required: [true, 'Code Test tidak boleh kosong'],
   },
+  htmlStarter: { type: String },
+  cssStarter: { type: String },
+  jsStarter: { type: String },
   code: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Code' }],
   status: {
     type: String,

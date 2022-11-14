@@ -7,7 +7,15 @@ const { default: mongoose } = require('mongoose');
 module.exports = {
   createWork: async (req, res) => {
     try {
-      const { name, description, codeTest, deadline } = req.body;
+      const {
+        name,
+        description,
+        codeTest,
+        deadline,
+        htmlStarter,
+        cssStarter,
+        jsStarter,
+      } = req.body;
 
       const classCourse = await Class.findOne({
         _id: req.params.id,
@@ -37,6 +45,9 @@ module.exports = {
           codeTest,
           exerciseId,
           deadline,
+          htmlStarter,
+          cssStarter,
+          jsStarter,
           courseId: classCourse.courseId,
         });
 
@@ -96,7 +107,15 @@ module.exports = {
       const { name, description, codeTest, deadline } = req.body;
       const work = await Work.findOneAndUpdate(
         { _id: req.params.id },
-        { name, description, codeTest, deadline }
+        {
+          name,
+          description,
+          codeTest,
+          deadline,
+          htmlStarter,
+          cssStarter,
+          jsStarter,
+        }
       );
 
       return res.status(200).json({
