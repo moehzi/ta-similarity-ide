@@ -63,12 +63,12 @@ module.exports = {
               classId: singleClass._id,
               courseId: classCourse.courseId,
             });
-            work.code.push(codes);
+            work.code.push(codes._id);
             await codes.save();
           });
         }
 
-        singleClass.works.push(work);
+        singleClass.works.push(work._id);
         await singleClass.save();
         await work.save();
       });
@@ -104,7 +104,15 @@ module.exports = {
 
   editWork: async (req, res) => {
     try {
-      const { name, description, codeTest, deadline } = req.body;
+      const {
+        name,
+        description,
+        codeTest,
+        deadline,
+        htmlStarter,
+        cssStarter,
+        jsStarter,
+      } = req.body;
       const work = await Work.findOneAndUpdate(
         { _id: req.params.id },
         {

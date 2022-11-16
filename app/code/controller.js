@@ -72,10 +72,12 @@ module.exports = {
     try {
       let jsTest = `
 	const chai = require("chai");
+	const chaiDom = require("chai-dom");
 	const resnap = require("resnap")();
 	const JSDOM = require('jsdom').JSDOM;
+	const axios = require("axios");
+	chai.use(chaiDom);
 	`;
-
       const clearCache = require('resnap')();
       // -------- requirements for js testing ---------
       const MochaTester = require('../../helper/MochaTester');
@@ -83,10 +85,8 @@ module.exports = {
       await Work.findOne({ _id: req.params.id }, (err, doc) => {
         const js = req.body.jsCode;
         const html = req.body.htmlCode;
-
         jsTest += `
-			const window = new JSDOM(\`${html}\`).window;	
-			const document = new JSDOM(\`${html}\`).window.document;	
+			const document = new JSDOM(\`${html}\`,{runScripts: "dangerously" }).window.document;	
 			${js}
 			${doc.codeTest}
 		  `;
