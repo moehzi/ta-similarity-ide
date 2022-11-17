@@ -53,7 +53,7 @@ module.exports = {
           courseId: classCourse.courseId,
         });
 
-        const folderName = `/Programs/Work/${work._id}`;
+        const folderName = `./Programs/Work/${work._id}`;
         try {
           if (!fs.existsSync(folderName)) {
             fs.mkdirSync(folderName);
@@ -204,7 +204,7 @@ module.exports = {
         );
 
         fs.rm(
-          `/Programs/Work/${req.params.id}`,
+          `./Programs/Work/${req.params.id}`,
           {
             recursive: true,
             force: true,

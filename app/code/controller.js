@@ -1,6 +1,5 @@
 // const Course = require('../courses/model');
 const fs = require('fs');
-const fsExtra = require('fs-extra');
 
 const Work = require('../works/model');
 const User = require('../users/model');
@@ -57,7 +56,7 @@ module.exports = {
           { status: 'Ready to review' }
         );
         fs.rm(
-          `/Programs/Work/${req.params.id}`,
+          `./Programs/Work/${req.params.id}`,
           { recursive: true, force: true },
           (err) => {
             if (err) {
@@ -67,8 +66,8 @@ module.exports = {
         );
       }
 
-      const folderName = `/Programs/Work/${req.params.id}/${user.registrationNumber}/program_test.js`;
-      const folderName1 = `/Programs/Work/${req.params.id}/${user.registrationNumber}/program.js`;
+      const folderName = `./Programs/Work/${req.params.id}/${user.registrationNumber}/program_test.js`;
+      const folderName1 = `./Programs/Work/${req.params.id}/${user.registrationNumber}/program.js`;
 
       fs.rm(folderName, { recursive: true, force: true }, (err) => {
         if (err) {
@@ -117,15 +116,15 @@ module.exports = {
 			${doc.codeTest}
 		  `;
         fs.writeFileSync(
-          `/Programs/Work/${doc._id}/${user.registrationNumber}/program_test.js`,
+          `./Programs/Work/${doc._id}/${user.registrationNumber}/program_test.js`,
           jsTest
         );
         fs.writeFile(
-          `/Programs/Work/${doc._id}/${user.registrationNumber}/program.js`,
+          `./Programs/Work/${doc._id}/${user.registrationNumber}/program.js`,
           js,
           () => {
             MochaTester(
-              `/Programs/Work/${doc._id}/${user.registrationNumber}/program_test.js`
+              `./Programs/Work/${doc._id}/${user.registrationNumber}/program_test.js`
             )
               .then((pass) => {
                 let testedJsCode = pass.results.every((test) => test);
