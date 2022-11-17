@@ -3,6 +3,8 @@ const Work = require('./model');
 const Code = require('../code/model.js');
 const Class = require('../class/model.js');
 const { default: mongoose } = require('mongoose');
+const User = require('../users/model');
+const fs = require('fs');
 
 module.exports = {
   createWork: async (req, res) => {
@@ -24,7 +26,7 @@ module.exports = {
       const courseClass = await Class.find({
         courseId: classCourse.courseId,
         author: req.user.id,
-      });
+      }).populate('students');
 
       //   const isAuthor = classCourse?.author.some(
       //     (element) => element.id === req.user.id
@@ -51,6 +53,15 @@ module.exports = {
           courseId: classCourse.courseId,
         });
 
+        const folderName = `./Programs/Work/${work._id}`;
+        try {
+          if (!fs.existsSync(folderName)) {
+            fs.mkdirSync(folderName);
+          }
+        } catch (error) {
+          console.log(error);
+        }
+
         if (singleClass.students.length > 0) {
           singleClass.students.map(async (student) => {
             const codes = await Code({
@@ -63,6 +74,16 @@ module.exports = {
               classId: singleClass._id,
               courseId: classCourse.courseId,
             });
+
+            const folderStudent = `${folderName}/${student.registrationNumber}`;
+            try {
+              if (!fs.existsSync(folderStudent)) {
+                fs.mkdirSync(folderStudent);
+              }
+            } catch (error) {
+              console.log(error);
+            }
+
             work.code.push(codes._id);
             await codes.save();
           });
@@ -169,6 +190,32 @@ module.exports = {
           select: 'name',
         },
       });
+
+      const codeTeacher = await Code.find({
+        workId: req.params.id,
+      }).populate({ path: 'workId', populate: { path: 'code' } });
+
+      const getStatus = codeTeacher.map((v) => v.status);
+
+      if (!getStatus.includes('Not Completed')) {
+        await Work.findOneAndUpdate(
+          { _id: req.params.id },
+          { status: 'Ready to review' }
+        );
+
+        fs.rm(
+          `./Programs/Work/${req.params.id}`,
+          {
+            recursive: true,
+            force: true,
+          },
+          (err) => {
+            if (err) {
+              console.log(err.message);
+            }
+          }
+        );
+      }
 
       return res.status(200).json({
         status: 'OK',

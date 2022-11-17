@@ -4,6 +4,7 @@ const Work = require('../works/model');
 const Code = require('../code/model');
 const Course = require('../courses/model');
 const mongoose = require('mongoose');
+const fs = require('fs');
 
 module.exports = {
   createClass: async (req, res) => {
@@ -135,14 +136,6 @@ module.exports = {
         classId: req.params.id,
       }).populate({ path: 'workId', populate: { path: 'code' } });
 
-      const getStatus = codeTeacher.map((v) => v.status);
-      if (!getStatus.includes('Not Completed')) {
-        await Work.findOneAndUpdate(
-          { _id: req.params.id },
-          { status: 'Ready to review' }
-        );
-      }
-
       classCourse.works.forEach(async (v) => {
         const todayTimestamp = parseInt(
           (new Date().getTime() / 1000).toFixed(0)
@@ -154,6 +147,19 @@ module.exports = {
               _id: v._id,
             },
             { status: 'Ready to review' }
+          );
+
+          fs.rm(
+            `./Programs/Work/${req.params.id}`,
+            {
+              recursive: true,
+              force: true,
+            },
+            (err) => {
+              if (err) {
+                console.log(err.message);
+              }
+            }
           );
         }
       });

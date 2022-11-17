@@ -1,5 +1,6 @@
 // const Course = require('../courses/model');
 const fs = require('fs');
+const fsExtra = require('fs-extra');
 
 const Work = require('../works/model');
 const User = require('../users/model');
@@ -55,7 +56,30 @@ module.exports = {
           { _id: req.params.id },
           { status: 'Ready to review' }
         );
+        fs.rm(
+          `./Programs/Work/${req.params.id}`,
+          { recursive: true, force: true },
+          (err) => {
+            if (err) {
+              console.log(err.message);
+            }
+          }
+        );
       }
+
+      const folderName = `./Programs/Work/${req.params.id}/${user.registrationNumber}/program_test.js`;
+      const folderName1 = `./Programs/Work/${req.params.id}/${user.registrationNumber}/program.js`;
+
+      fs.rm(folderName, { recursive: true, force: true }, (err) => {
+        if (err) {
+          console.log(err.message);
+        }
+      });
+      fs.rm(folderName1, { recursive: true, force: true }, (err) => {
+        if (err) {
+          console.log(err.message);
+        }
+      });
 
       return res.status(200).json({
         status: 'OK',
@@ -81,37 +105,48 @@ module.exports = {
       const clearCache = require('resnap')();
       // -------- requirements for js testing ---------
       const MochaTester = require('../../helper/MochaTester');
+      const user = await User.findOne({ _id: req.user.id });
 
       await Work.findOne({ _id: req.params.id }, (err, doc) => {
         const js = req.body.jsCode;
         const html = req.body.htmlCode;
+
         jsTest += `
 			const document = new JSDOM(\`${html}\`,{runScripts: "dangerously" }).window.document;	
 			${js}
 			${doc.codeTest}
 		  `;
-        fs.writeFileSync('program_test.js', jsTest);
-        fs.writeFile('./program.js', js, () => {
-          MochaTester('./program_test.js')
-            .then((pass) => {
-              let testedJsCode = pass.results.every((test) => test);
-              clearCache();
-              return res.status(200).json({
-                status: 'OK',
-                data: pass,
-                solution: testedJsCode,
+        fs.writeFileSync(
+          `./Programs/Work/${doc._id}/${user.registrationNumber}/program_test.js`,
+          jsTest
+        );
+        fs.writeFile(
+          `./Programs/Work/${doc._id}/${user.registrationNumber}/program.js`,
+          js,
+          () => {
+            MochaTester(
+              `./Programs/Work/${doc._id}/${user.registrationNumber}/program_test.js`
+            )
+              .then((pass) => {
+                let testedJsCode = pass.results.every((test) => test);
+                clearCache();
+                return res.status(200).json({
+                  status: 'OK',
+                  data: pass,
+                  solution: testedJsCode,
+                });
+              })
+              .catch((err) => {
+                clearCache();
+                return res.status(200).json({
+                  solution: false,
+                  data: {
+                    error_msg: [err.message],
+                  },
+                });
               });
-            })
-            .catch((err) => {
-              clearCache();
-              return res.status(200).json({
-                solution: false,
-                data: {
-                  error_msg: [err.message],
-                },
-              });
-            });
-        });
+          }
+        );
       })
         .clone()
         .catch((err) => console.log(err));
