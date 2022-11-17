@@ -150,7 +150,7 @@ module.exports = {
           );
 
           fs.rm(
-            `./Programs/Work/${req.params.id}`,
+            `/Programs/Work/${req.params.id}`,
             {
               recursive: true,
               force: true,
