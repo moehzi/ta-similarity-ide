@@ -2,6 +2,7 @@ const Course = require('./model');
 const User = require('../users/model');
 const Code = require('../code/model');
 const Work = require('../works/model');
+const Class = require('../class/model');
 
 module.exports = {
   createCourse: async (req, res) => {
@@ -28,6 +29,12 @@ module.exports = {
       'author'
     );
     const course = await Course.findOneAndDelete({ _id: req.params.id });
+
+    const classCourse = await Class.find({ courseId: req.params.id });
+
+    classCourse.forEach(async (v) => {
+      await Class.findOneAndDelete({ _id: v._id });
+    });
 
     const isAuthor = getCourse.author.some(
       (e) => e._id.toString() === req.user.id
