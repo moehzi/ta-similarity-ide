@@ -7,6 +7,7 @@ const {
   getCode,
   checkSimilarity,
   detailStudentCode,
+  updateScore,
 } = require('./controller');
 var router = express.Router();
 
@@ -23,8 +24,9 @@ router.post(
 router.get(
   '/detail-work/:workId/student/:studentId',
   isAuth,
-  isRole(['teacher','student']),
+  isRole(['teacher', 'student']),
   detailStudentCode
 );
+router.put('/works/code/:id/score', isAuth, isRole(['teacher']), updateScore);
 
 module.exports = router;

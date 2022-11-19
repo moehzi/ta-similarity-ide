@@ -28,6 +28,7 @@ const codeSchema = mongoose.Schema(
     similarityResult: [],
     classId: { type: mongoose.Schema.Types.ObjectId, ref: 'Class' },
     courseId: { type: mongoose.Schema.Types.ObjectId, ref: 'Course' },
+    score: { type: String, default: '0' },
   },
   { timestamps: true }
 );

@@ -318,4 +318,22 @@ module.exports = {
       data: code,
     });
   },
+
+  updateScore: async (req, res) => {
+    const { score } = req.body;
+    const code = await Code.findOneAndUpdate(
+      { _id: req.params.id },
+      { score: score }
+    );
+
+    if (!code)
+      return res.status(404).json({
+        status: 'FAIL',
+        message: 'Not found',
+      });
+
+    return res
+      .status(200)
+      .json({ status: 'OK', message: 'Update score sucessfully' });
+  },
 };
