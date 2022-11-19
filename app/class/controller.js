@@ -207,14 +207,24 @@ module.exports = {
       (element) => element.registrationNumber === user.registrationNumber
     );
 
+    const work = await Work.find({
+      classId: req.params.id,
+      courseId: classCourse.courseId,
+    }).populate('code');
+
     if (isExist)
       return res.status(400).json({
         status: '400',
         message: 'You are already join this class',
       });
 
-    classCourse.works.map(async (v) => {
-      const codes = await Code({
+    if (!classCourse)
+      return res
+        .status(404)
+        .json({ status: 'Fail', message: 'Your class is not available' });
+
+    classCourse.works.forEach(async (v, index) => {
+      const codes = await Code.create({
         htmlCode: '',
         cssCode: '',
         jsCode: '',
@@ -224,8 +234,20 @@ module.exports = {
         classId: req.params.id,
         courseId: classCourse.courseId,
       });
+
+      const folderName = `./Programs/Work/${work[index]._id}`;
+      const folderStudent = `${folderName}/${user.registrationNumber}`;
+      try {
+        if (!fs.existsSync(folderStudent)) {
+          fs.mkdirSync(folderStudent);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+
       v.code.push(codes);
-      await codes.save();
+      work[index].code.push(codes);
+      await work[index].save();
     });
 
     classCourse.students.push(user);
@@ -233,11 +255,6 @@ module.exports = {
 
     await user.save();
     await classCourse.save();
-
-    if (!classCourse)
-      return res
-        .status(404)
-        .json({ status: 'Fail', message: 'Your class is not available' });
 
     return res.status(200).json({
       status: 'OK',
