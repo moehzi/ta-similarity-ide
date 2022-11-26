@@ -163,9 +163,10 @@ module.exports = {
   checkSimilarity: async (req, res) => {
     try {
       const { algorithm, categoryClass } = req.body;
-      const code = await Code.find({ workId: req.params.id }).populate(
-        'author workId'
-      );
+      const code = await Code.find({
+        workId: req.params.id,
+        status: 'Completed',
+      }).populate('author workId');
       const ObjectId = mongoose.Types.ObjectId;
 
       if (categoryClass === 'all-class') {
