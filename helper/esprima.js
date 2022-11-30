@@ -59,6 +59,9 @@ function analyzeCode(code) {
     if (node.type === undefined) node.type = 'UN';
     if (node.type === 'NewExpression') node.type = 'NE';
     if (node.type === 'ConditionalExpression') node.type = 'CE';
+    if (node.type === 'ObjectExpression') node.type = 'OE';
+    if (node.type === 'Property') node.type = 'PR';
+    if (node.type === 'AwaitExpression') node.type = 'AE';
 
     temp += node.type;
   });
