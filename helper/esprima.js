@@ -57,6 +57,8 @@ function analyzeCode(code) {
     if (node.type === 'TemplateLiteral') node.type = 'Z';
     if (node.type === 'TemplateElement') node.type = 'AB';
     if (node.type === undefined) node.type = 'UN';
+    if (node.type === 'NewExpression') node.type = 'NE';
+    if (node.type === 'ConditionalExpression') node.type = 'CE';
 
     temp += node.type;
   });
