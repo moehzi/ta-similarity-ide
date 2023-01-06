@@ -2,15 +2,15 @@ const analyzeCode = require('./esprima');
 // const scriptA = require('./script');
 // const scriptB = require('./script2');
 
-function RabinKarpJs(codeA, codeB) {
+function RabinKarpJs(codeA, codeB, kgram) {
   const esprimaCodeA = analyzeCode(codeA);
   const esprimaCodeB = analyzeCode(codeB);
 
   const kGramA = kGram(esprimaCodeA);
   const kGramB = kGram(esprimaCodeB);
 
-  const hashA = hashing(esprimaCodeA, 7, 5);
-  const hashB = hashing(esprimaCodeB, 7, 5);
+  const hashA = hashing(esprimaCodeA, kgram, 5);
+  const hashB = hashing(esprimaCodeB, kgram, 5);
 
   const resultA = fingerPrint(hashA);
   const resultB = fingerPrint(hashB);

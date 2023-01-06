@@ -162,7 +162,7 @@ module.exports = {
 
   checkSimilarity: async (req, res) => {
     try {
-      const { algorithm, categoryClass } = req.body;
+      const { algorithm, categoryClass, kGram } = req.body;
       const code = await Code.find({
         workId: req.params.id,
         status: 'Completed',
@@ -198,7 +198,7 @@ module.exports = {
             if (v.author.name !== y.author.name) {
               if (algorithm === 'RabinKarp') {
                 const { resultSimilarity, esprimaCodeB, esprimaCodeA } =
-                  RabinKarpJs(v.jsCode, y.jsCode);
+                  RabinKarpJs(v.jsCode, y.jsCode, kGram);
                 esprimaCodeStudentA = esprimaCodeA;
                 similarityPercentage.push(resultSimilarity);
                 similarityResult.push({
@@ -258,7 +258,7 @@ module.exports = {
             if (v.author.name !== y.author.name) {
               if (algorithm === 'RabinKarp') {
                 const { resultSimilarity, esprimaCodeB, esprimaCodeA } =
-                  RabinKarpJs(v.jsCode, y.jsCode);
+                  RabinKarpJs(v.jsCode, y.jsCode, kGram);
                 esprimaCodeStudentA = esprimaCodeA;
                 similarityPercentage.push(resultSimilarity);
                 similarityResult.push({
