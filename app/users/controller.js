@@ -1,5 +1,4 @@
 const User = require('./model');
-const Course = require('../courses/model');
 
 module.exports = {
   getUsers: async (req, res) => {
@@ -16,8 +15,6 @@ module.exports = {
       encryptedPassword: 0,
       __v: 0,
     });
-
-    // const teacher = user.filter((v) => v._id.toString() !== req.user.id);
 
     return res.status(200).json({
       status: 'OK',

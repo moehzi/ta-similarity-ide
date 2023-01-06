@@ -9,8 +9,8 @@ function RabinKarpJs(codeA, codeB) {
   const kGramA = kGram(esprimaCodeA);
   const kGramB = kGram(esprimaCodeB);
 
-  const hashA = hashing(esprimaCodeA, 3, 5);
-  const hashB = hashing(esprimaCodeB, 3, 5);
+  const hashA = hashing(esprimaCodeA, 7, 5);
+  const hashB = hashing(esprimaCodeB, 7, 5);
 
   const resultA = fingerPrint(hashA);
   const resultB = fingerPrint(hashB);
